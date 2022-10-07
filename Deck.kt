@@ -1,7 +1,8 @@
 package indigo
 
 class Deck {
-    private var deck: MutableSet<Card>
+    var deck: MutableSet<Card>
+        private set
 
     init {
         deck = generateDeck()
