@@ -98,8 +98,10 @@ class IndigoGame {
             }
             computerPlayer.cardsInHand += drawCards()
         }
-        val card = computerPlayer.cardsInHand.first()
 
+        println(computerPlayer.cardsInHand.joinToString(" "))
+
+        val card = computerAI()
         println("Computer plays $card")
 
         computerPlayer.cardsInHand.remove(card)
@@ -110,6 +112,44 @@ class IndigoGame {
             printScore()
         }
     }
+
+    private fun computerAI(): Card {
+        if (computerPlayer.cardsInHand.size == 1) return computerPlayer.cardsInHand.first()
+
+        return if (cardsOnTable.size == 0) {
+            cardWithSameSuiteOrRank(computerPlayer.cardsInHand) ?: computerPlayer.cardsInHand.first()
+        } else {
+            val candidateCards = candidateCards()
+
+            if (candidateCards.isEmpty()) {
+                cardWithSameSuiteOrRank(computerPlayer.cardsInHand) ?: computerPlayer.cardsInHand.first()
+            } else if (candidateCards.size == 1) candidateCards.first()
+            else {
+                cardWithSameSuiteOrRank(candidateCards) ?: candidateCards.first()
+            }
+        }
+    }
+
+    private fun cardWithSameSuiteOrRank(cardSet: MutableSet<Card>): Card? {
+        for (cardInHand in cardSet) {
+            for (otherCardInHand in cardSet) {
+                if (cardInHand == otherCardInHand) continue
+                if (cardInHand.suit == otherCardInHand.suit) return cardInHand
+            }
+        }
+
+        for (cardInHand in cardSet) {
+            for (otherCardInHand in cardSet) {
+                if (cardInHand == otherCardInHand) continue
+                if (cardInHand.rank == otherCardInHand.rank) return cardInHand
+            }
+        }
+        return null
+    }
+
+    private fun candidateCards(): MutableSet<Card> =
+        computerPlayer.cardsInHand.filter { it.rank == cardsOnTable.last().rank || it.suit == cardsOnTable.last().suit }
+            .toMutableSet()
 
     private fun printCardsOnTable() {
         println()
