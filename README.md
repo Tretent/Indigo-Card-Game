@@ -1,2 +1,2 @@
 # Indigo-Card-Game
-Kotlin Basics Indigo Card Game project
+JetBrains Academy Kotlin Basics Indigo Card Game project
